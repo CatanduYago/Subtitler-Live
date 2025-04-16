@@ -1,28 +1,24 @@
 {
-    "manifest_version": 3,
-    "name": "Subtítulos en Tiempo Real",
-    "version": "1.1",
-    "description": "Extensión para generar subtítulos en tiempo real desde el audio de pestañas del navegador.",
-    "permissions": [
-        "scripting",
-        "activeTab",
-        "tabCapture",
-        "offscreen"
-    ],
-    "host_permissions": [
-        "<all_urls>"
-    ],
-    "background": {
-        "service_worker": "background.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "content.js"
-            ]
-        }
-    ]
+  "manifest_version": 3,
+  "name": "Live Subtitles",
+  "version": "1.0",
+  "description": "Transcribe audio from the current tab",
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "http://localhost:3000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }

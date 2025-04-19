@@ -1,74 +1,113 @@
-# 🎧 Subtitler 
+# Transcriber: Live
 
-**Aplicación para transcribir a texto el audio recibido por micrófono en tiempo real.**
+Una aplicación web para capturar audio de pantalla en tiempo real y transcribirlo utilizando AWS Transcribe.
 
-## 📝 Descripción
+## Características
 
-Subtitler es una aplicación web que transcribe en tiempo real el audio recibido a través del micrófono del usuario. Utiliza tecnologías como **JavaScript**, **HTML** y **CSS** para ofrecer una interfaz amigable, intuitiva y funcional. 
+- Captura de audio desde la pantalla compartida del navegador.
+- Envío periódico de fragmentos de audio a AWS S3.
+- Transcripción en vivo mediante AWS Transcribe.
+- Visualización de transcripciones en tiempo real.
+- Soporte para múltiples formatos de audio (
+  mp3, mp4, wav, flac, ogg, amr, webm, m4a).
 
-> [!IMPORTANT]
-> La aplicación solo es compatible con **Google Chrome**, ya que utiliza la API `webkitSpeechRecognition`, la cual es exclusiva de Chrome.
+## Requisitos previos
 
-## 🚀 Características
+- Node.js (>= v14)
+- npm o yarn
+- Cuenta de AWS con permisos para:
+  - S3: `s3:CreateBucket`, `s3:PutObject`, `s3:HeadBucket`.
+  - Transcribe: `transcribe:StartTranscriptionJob`, `transcribe:GetTranscriptionJob`.
+- Crear un bucket en S3 (o dejar que la aplicación lo cree automáticamente).
+- Configurar credenciales de AWS en variables de entorno.
 
-- ✅ **Transcripción en tiempo real:** Convierte el audio del micrófono en texto instantáneamente.
-- 🎨 **Interfaz amigable:** Diseño limpio y fácil de usar.
-- 🔧 **Compatibilidad limitada:** Funciona exclusivamente en el navegador **Google Chrome**.
+## Instalación
 
-## 🛠️ Tecnologías Utilizadas
-
-- ⚙️ **JavaScript** (92.6%)
-- 📄 **HTML** (4.7%)
-- 🎨 **CSS** (2.7%)
-
-## 💾 Instalación
-
-Sigue estos pasos para instalar y ejecutar la aplicación en tu máquina local:
-
-1. 🛠️ Clona el repositorio en tu máquina local:
+1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/CatanduYago/Subtitler.git
+   git clone https://github.com/TU_USUARIO/TU_REPO.git
+   cd TU_REPO
+   ```
+2. Instalar dependencias:
+   ```bash
+   npm install
+   # o con yarn
+   yarn install
+   ```
+3. Renombrar el archivo de ejemplo de variables de entorno:
+   ```bash
+   mv .env.example .env
+   ```
+4. Configurar las variables de entorno en `.env`:
+   ```dotenv
+   # Puerto del servidor
+   PORT=3000
+
+   # Credenciales de AWS
+   AWS_ACCESS_KEY_ID=tu_access_key_id
+   AWS_SECRET_ACCESS_KEY=tu_secret_access_key
+   AWS_REGION=us-east-2
+   AWS_S3_BUCKET=tu_bucket
+
+   # Configuración de Transcribe
+   AWS_TRANSCRIBE_LANGUAGE=es-ES
    ```
 
-2. 📂 Navega al directorio del proyecto:
+## Uso
+
+1. Iniciar el servidor:
    ```bash
-   cd Subtitler
+   npm start
+   # o
+   node index.js
    ```
+2. Abrir el navegador en `http://localhost:3000`.
+3. Hacer clic en **Iniciar** para permitir la captura de pantalla con audio:
+   - Seleccionar la pestaña o ventana que incluya audio.
+   - Asegurarse de marcar la opción **Compartir audio**.
+4. La aplicación enviará cada 5 segundos un fragmento de audio a AWS Transcribe.
+5. Verás las transcripciones aparecer en pantalla en tiempo real.
+6. Hacer clic en **Detener** para finalizar la captura.
 
-3. 🌐 Abre el archivo `index.html` en **Google Chrome**.
+## Estructura del proyecto
 
-4. 🎤 Permite el acceso al micrófono cuando el navegador lo solicite.
+```
+├── app.js             # Lógica del cliente (captura de audio y envíos)
+├── index.js           # Servidor Express (subida a S3 y transcripción)
+├── public/
+│   ├── index.html     # Página principal
+│   ├── styles.css     # Estilos de la interfaz
+│   └── app.js         # Script de captura y UI
+├── .env.example       # Variables de entorno de ejemplo
+├── package.json       # Dependencias y scripts
+└── README.md          # Documentación del proyecto
+```
 
-5. 🎉 ¡Disfruta viendo cómo tu audio se transcribe automáticamente en la pantalla!
+## Variables de entorno
 
-## 🖥️ Uso
+| Variable                     | Descripción                                         |
+| ---------------------------- | --------------------------------------------------- |
+| `PORT`                       | Puerto en el que escucha el servidor (por defecto 3000). |
+| `AWS_ACCESS_KEY_ID`          | ID de la clave de acceso AWS.                       |
+| `AWS_SECRET_ACCESS_KEY`      | Secreto de la clave de acceso AWS.                  |
+| `AWS_REGION`                 | Región de AWS (ej. `us-east-2`).                    |
+| `AWS_S3_BUCKET`              | Nombre del bucket de S3 para almacenar los audios.  |
+| `AWS_TRANSCRIBE_LANGUAGE`    | Código de idioma para Transcribe (ej. `es-ES`).     |
 
-- 🌐 Abre el archivo **index.html** en **Google Chrome**.
-- 🎤 Permite el acceso al micrófono.
-- 👀 Observa cómo el texto aparece en tiempo real mientras hablas.
+## Contribuciones
 
-## 🤝 Contribuciones
+Las contribuciones son bienvenidas. Para proponer mejoras o reportar errores:
+1. Abrir un issue.
+2. Crear un branch (`git checkout -b feature/nueva-funcionalidad`).
+3. Hacer commit de tus cambios (`git commit -am 'Añade nueva funcionalidad'`).
+4. Hacer push al branch (`git push origin feature/nueva-funcionalidad`).
+5. Abrir un pull request.
 
-🌟 ¡Contribuciones son bienvenidas! Si deseas contribuir a este proyecto, sigue estos pasos:
+## Licencia
 
-1. 🔄 Haz un **fork** del proyecto.
-2. 🌱 Crea una nueva rama:
-   ```bash
-   git checkout -b feature/nueva-caracteristica
-   ```
-3. 🛠️ Realiza tus cambios y haz commit:
-   ```bash
-   git commit -am "Agrega nueva característica"
-   ```
-4. 🛠️ Sube tus cambios a la rama:
-   ```bash
-   git push origin feature/nueva-caracteristica
-   ```
-5. 📚 Abre un **Pull Request**.
+Este proyecto está bajo la licencia MIT. Ver el archivo [`LICENSE`](./LICENSE) para más detalles.
 
-## 📧 Contacto
+---
 
-Si tienes alguna pregunta o sugerencia, no dudes en contactarnos:
-
-- ✉️ **Email:** [ycatalanoa01@gmail.com](mailto:ycatalanoa01@gmail.com)
+© 2025 Yago Catalano Andújar
 

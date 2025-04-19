@@ -5,3 +5,4 @@ aws_credentials.csv
 transcribe-user_accessKeys.csv
 /audio
 .idea
+.env

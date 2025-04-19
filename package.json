@@ -1,14 +1,16 @@
 {
   "name": "subtitler-server",
   "version": "1.0.0",
-  "description": "Servidor para manejar la transcripción de audio",
+  "description": "Servidor para transcripción de audio",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "aws-sdk": "^2.1499.0",
+    "axios": "^1.8.4",
     "cors": "^2.8.5",
-    "aws-sdk": "^2.1239.0"
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2"
   }
-} 
+}

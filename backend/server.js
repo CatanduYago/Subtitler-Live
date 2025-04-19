@@ -113,7 +113,7 @@ async function getTranscriptionResult(transcriptionUrl) {
   }
 
 // Ruta para servir la página principal
-app.get('/', (req, res) => {
+app.get('../', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 

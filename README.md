@@ -78,8 +78,11 @@
 ## 📁 Estructura del proyecto
 
 ```
-├── app.js             # Lógica del cliente (captura de audio + UI)
-├── index.js           # Servidor Express (S3 & Transcribe)
+├── audio/            # Carpeta en la que se almacenan temporalmente los audios grabados antes de mandarse a AWS
+│
+├── backend/
+│   ├── server.js     # Servidor que se encarga de recibir los audios y mandarlos a Amazon Transcribe
+│
 ├── public/
 │   ├── index.html     # Página principal
 │   ├── styles.css     # Estilos CSS

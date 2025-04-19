@@ -82,12 +82,14 @@
 │
 ├── backend/
 │   ├── server.js     # Servidor que se encarga de recibir los audios y mandarlos a Amazon Transcribe
+│   ├── .env.example  # Ejemplo de variables de entorno
 │
 ├── public/
 │   ├── index.html     # Página principal
 │   ├── styles.css     # Estilos CSS
+│   ├── language.js    # Lógica del cambio de idiomas
 │   └── app.js         # Script de captura y UI
-├── .env.example       # Ejemplo de variables de entorno
+
 ├── package.json       # Dependencias y scripts
 └── README.md          # Documentación
 ```

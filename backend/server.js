@@ -3,11 +3,14 @@ const cors = require('cors');
 const AWS = require('aws-sdk');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config();
+const dotenv = require('dotenv');
 const axios = require('axios');
 
+// Cargar variables de entorno desde la carpeta backend
+dotenv.config({ path: path.join(__dirname, '.env') });
+
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // Configurar CORS
 app.use(cors());
@@ -15,7 +18,7 @@ app.use(express.json({ limit: '100mb' }));
 app.use(express.urlencoded({ limit: '100mb', extended: true }));
 
 // Servir archivos estáticos desde la carpeta public
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Configurar AWS
 AWS.config.update({
@@ -113,8 +116,8 @@ async function getTranscriptionResult(transcriptionUrl) {
   }
 
 // Ruta para servir la página principal
-app.get('../', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 
 app.post('/transcribe', async (req, res) => {
@@ -186,6 +189,6 @@ app.post('/transcribe', async (req, res) => {
     }
 });
 
-app.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });

@@ -1,5 +1,6 @@
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
+const stopCaptureButton = document.getElementById('stopCaptureButton');
 const transcriptionsContainer = document.getElementById('transcriptions');
 
 let audioContext;
@@ -7,6 +8,13 @@ let mediaStream;
 let isRecording = false;
 let audioChunks = [];
 let audioInterval;
+let languageManager;
+
+// Inicializar el gestor de idiomas
+document.addEventListener('DOMContentLoaded', () => {
+    languageManager = new LanguageManager();
+    languageManager.init();
+});
 
 // Función para obtener el formato de audio soportado
 function getSupportedMimeType() {
@@ -29,6 +37,7 @@ function getSupportedMimeType() {
 
 startButton.addEventListener('click', startCapture);
 stopButton.addEventListener('click', stopCapture);
+stopCaptureButton.addEventListener('click', stopCapture);
 
 async function startCapture() {
     try {
@@ -45,6 +54,10 @@ async function startCapture() {
         // Mostrar el videoContainer con animación
         const videoContainer = document.getElementById('videoContainer');
         videoContainer.classList.add('active');
+        
+        // Actualizar texto del botón de detener según el idioma
+        const lang = languageManager.translations[languageManager.getCurrentLanguage()];
+        stopCaptureButton.textContent = lang.stopCapture;
         
         // Solicitar captura de pantalla con audio de la pestaña
         mediaStream = await navigator.mediaDevices.getDisplayMedia({

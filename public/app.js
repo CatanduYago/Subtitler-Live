@@ -2,6 +2,7 @@ const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 const stopCaptureButton = document.getElementById('stopCaptureButton');
 const transcriptionsContainer = document.getElementById('transcriptions');
+const transcriptions = document.getElementById('transcriptions');
 
 let audioContext;
 let mediaStream;
@@ -254,4 +255,24 @@ window.addEventListener('beforeunload', () => {
     if (isRecording) {
         stopCapture();
     }
-}); 
+});
+
+transcriptions.addEventListener('mousedown', e => {
+
+    const offsetX = e.clientX - transcriptions.offsetLeft;
+    const offsetY = e.clientY - transcriptions.offsetTop;
+
+    function onMouseMove(eMove) {
+        transcriptions.style.left = `${eMove.clientX - offsetX}px`;
+        transcriptions.style.top  = `${eMove.clientY - offsetY}px`;
+    }
+
+    function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    // Añade los listeners al documento
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+});

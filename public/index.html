@@ -14,7 +14,7 @@
       <div class="left">
         <h1>Transcriber: Live</h1>
         <hr>
-        <p>Esta aplicación web permite capturar audio de pantalla en tiempo real y transcribirlo utilizando Amazon Transcribe.</p>
+        <p>Esta aplicación web permite capturar audio de pantalla en tiempo real y genera subtitulos a la vez. Arrastra los subtitulos donde tu quieras y disfruta.</p>
         <p>Al ser un servicio gratuito de Amazon, está limitado a 3600 audios al mes.</p>
       </div>
 
@@ -42,15 +42,16 @@
         </a>
       </div>
       <div>
-        <p>© 2024 Yago Catalano Andújar</p>
+        <p>© 2025 Yago Catalano Andújar</p>
       </div>
     </div>
   </div>
 
   <!-- Video y Subtítulos -->
   <div id="videoContainer" class="hidden">
-    <video id="sharedVideo" autoplay></video>
-    <div id="transcriptions"></div>
+    <div id="videoWrapper">
+      <video id="sharedVideo" autoplay controls muted></video>
+    </div>    <div id="transcriptions"></div>
     <button id="stopCaptureButton" class="stop-capture-button">Detener Captura</button>
   </div>
 

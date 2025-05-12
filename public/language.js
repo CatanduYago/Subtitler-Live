@@ -1,5 +1,7 @@
 class LanguageManager {
+
     constructor() {
+        // Inicializamos el idioma actual como español
         this.currentLanguage = 'es';
         this.translations = {
             es: {
@@ -23,37 +25,43 @@ class LanguageManager {
         };
     }
 
+    // Inicializamos la funcionalidad del cambio de idioma
     init() {
         const languageButton = document.getElementById('language-switcher');
         languageButton.addEventListener('click', () => this.toggleLanguage());
+
+        // Actualizamos los textos según el idioma actual
         this.updateLanguage();
     }
 
+    // Alternamos entre los idiomas disponibles
     toggleLanguage() {
         this.currentLanguage = this.currentLanguage === 'es' ? 'en' : 'es';
+        // llamamos al cambio de idioma
         this.updateLanguage();
     }
 
+    // Actualizamos todos los textos visibles con la traducción correspondiente
     updateLanguage() {
         const lang = this.translations[this.currentLanguage];
         const languageButton = document.getElementById('language-switcher');
-        
-        // Actualizar textos
+
+        // Actualizamos los textos
         document.querySelector('.left h1').textContent = lang.title;
         document.querySelectorAll('.left p')[0].textContent = lang.description;
         document.querySelectorAll('.left p')[1].textContent = lang.limit;
         document.querySelector('.right p').textContent = lang.controls;
         document.getElementById('startButton').textContent = lang.start;
-        document.getElementById('stopButton').textContent = lang.stop;
-        
-        // Actualizar botón de idioma
+
+        // Actualizamos botón de idioma
         languageButton.textContent = this.currentLanguage.toUpperCase();
     }
 
+    // Devolvemos el idioma actual
     getCurrentLanguage() {
         return this.currentLanguage;
     }
 }
 
-// Exportar la clase para usarla en app.js
-window.LanguageManager = LanguageManager; 
+// Exportamos la clase para poder usarla en app.js
+window.LanguageManager = LanguageManager;

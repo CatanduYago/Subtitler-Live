@@ -1,5 +1,5 @@
+// Obtenemos los elementos del DOM necesarios para el control de la interfaz
 const startButton = document.getElementById('startButton');
-const stopButton = document.getElementById('stopButton');
 const stopCaptureButton = document.getElementById('stopCaptureButton');
 const transcriptionsContainer = document.getElementById('transcriptions');
 const transcriptions = document.getElementById('transcriptions');
@@ -11,22 +11,21 @@ let audioChunks = [];
 let audioInterval;
 let languageManager;
 
-// Inicializar el gestor de idiomas
+// Esperamos a que el DOM cargue para inicializar el gestor de idiomas
 document.addEventListener('DOMContentLoaded', () => {
     languageManager = new LanguageManager();
     languageManager.init();
 });
 
-// Función para obtener el formato de audio soportado
+// Devuelve el primer formato de audio soportado por el navegador para MediaRecorder
 function getSupportedMimeType() {
-    // AWS Transcribe soporta: mp3, mp4, wav, flac, ogg, amr, webm
     const types = [
         'audio/webm;codecs=opus',
         'audio/mp4',
         'audio/wav',
         'audio/webm'
     ];
-    
+
     for (let type of types) {
         if (MediaRecorder.isTypeSupported(type)) {
             console.log('Formato soportado:', type);
@@ -37,30 +36,29 @@ function getSupportedMimeType() {
 }
 
 startButton.addEventListener('click', startCapture);
-stopButton.addEventListener('click', stopCapture);
 stopCaptureButton.addEventListener('click', stopCapture);
 
 async function startCapture() {
     try {
         console.log('Solicitando captura de pantalla...');
-        
-        // Iniciar animación de fade out del contenedor principal
+
+        // Aplicamos animación de desvanecimiento al contenedor principal
         const mainContainer = document.getElementById('mainContainer');
         mainContainer.classList.add('fade-out');
         document.body.classList.add('video-active');
-        
-        // Esperar a que termine la animación
+
+        // Esperamos 500ms para que termine la animación
         await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Mostrar el videoContainer con animación
+
+        // Mostramos el contenedor del video compartido
         const videoContainer = document.getElementById('videoContainer');
         videoContainer.classList.add('active');
-        
-        // Actualizar texto del botón de detener según el idioma
+
+        // Actualizamos el texto del botón de detener según el idioma actual
         const lang = languageManager.translations[languageManager.getCurrentLanguage()];
         stopCaptureButton.textContent = lang.stopCapture;
-        
-        // Solicitar captura de pantalla con audio de la pestaña
+
+        // Solicitamos al navegador la captura de pantalla con audio de pestaña
         mediaStream = await navigator.mediaDevices.getDisplayMedia({
             video: {
                 cursor: "always"
@@ -72,57 +70,53 @@ async function startCapture() {
                 suppressLocalAudioPlayback: false
             }
         });
-        
+
+        // Asignamos el stream de pantalla al elemento de video
         const videoElement = document.getElementById('sharedVideo');
         videoElement.srcObject = mediaStream;
-        
-        console.log('Stream obtenido:', mediaStream);
-        
-        // Verificar que el stream tiene audio
+
+        // Verificamos que el stream contiene pistas de audio
         const audioTracks = mediaStream.getAudioTracks();
         if (audioTracks.length === 0) {
             throw new Error('No se detectó audio en la pestaña compartida. Asegúrate de seleccionar "Compartir audio" al compartir la pantalla.');
         }
-        
-        console.log('Tracks de audio detectados:', audioTracks.length);
-        
-        // Crear AudioContext
+
+        // Creamos un contexto de audio para procesar el sonido
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const source = audioContext.createMediaStreamSource(mediaStream);
-        
-        // Crear ScriptProcessor para capturar el audio
+
+        // Creamos un procesador de audio para capturar muestras del stream
         const processor = audioContext.createScriptProcessor(4096, 1, 1);
-        
+
+        // Capturamos el audio del canal y lo convertimos a Int16Array
         processor.onaudioprocess = (e) => {
             const inputData = e.inputBuffer.getChannelData(0);
             const buffer = new Int16Array(inputData.length);
-            
+
             for (let i = 0; i < inputData.length; i++) {
                 buffer[i] = Math.min(1, Math.max(-1, inputData[i])) * 0x7FFF;
             }
-            
+
             audioChunks.push(buffer);
         };
-        
+
+        // Conectamos el flujo de audio al procesador
         source.connect(processor);
         processor.connect(audioContext.destination);
-        
-        console.log('Captura de audio iniciada');
+
         isRecording = true;
-        updateUI();
-        
-        // Enviar audio cada 5 segundos
+
+        // Enviamos fragmentos de audio cada 5 segundos
         audioInterval = setInterval(async () => {
             if (audioChunks.length > 0) {
                 try {
-                    // Convertir los chunks de audio a WAV
+                    // Convertimos los fragmentos a un blob WAV
                     const wavBlob = createWavBlob(audioChunks);
-                    audioChunks = []; // Limpiar los chunks después de usarlos
-                    
-                    console.log('Tamaño del blob de audio:', wavBlob.size, 'bytes');
+                    audioChunks = []; // Limpiamos el buffer tras convertir
+
                     const base64Audio = await blobToBase64(wavBlob);
-                    
-                    console.log('Enviando audio a Transcribe...');
+
+                    // Enviamos el audio codificado a la API de transcripción
                     const response = await fetch('http://localhost:3000/transcribe', {
                         method: 'POST',
                         headers: {
@@ -133,15 +127,12 @@ async function startCapture() {
                             format: 'wav'
                         })
                     });
-                    
-                    console.log('Respuesta del servidor:', response.status);
+
                     const data = await response.json();
-                    
+
                     if (data.transcription) {
-                        console.log('Transcripción recibida:', data.transcription);
                         addTranscription(data.transcription);
                     } else {
-                        console.error('Error en la transcripción:', data.error);
                         addTranscription('Error: ' + data.error);
                     }
                 } catch (error) {
@@ -150,9 +141,16 @@ async function startCapture() {
                 }
             }
         }, 5000);
-        
+
     } catch (error) {
         console.error('Error al iniciar la captura:', error);
+
+        // Deshacer cambios visuales si hubo error al capturar
+        const mainContainer = document.getElementById('mainContainer');
+        mainContainer.classList.remove('fade-out');
+        document.body.classList.remove('video-active');
+        document.getElementById('videoContainer').classList.remove('active');
+
         alert('Error al iniciar la captura: ' + error.message);
     }
 }
@@ -160,16 +158,14 @@ async function startCapture() {
 function stopCapture() {
     if (isRecording) {
         console.log('Deteniendo captura...');
-        
-        // Ocultar el videoContainer con animación
+
+        // Ocultamos el video compartido y restauramos la vista principal
         const videoContainer = document.getElementById('videoContainer');
         videoContainer.classList.remove('active');
-        
-        // Restaurar el contenedor principal
         const mainContainer = document.getElementById('mainContainer');
         mainContainer.classList.remove('fade-out');
         document.body.classList.remove('video-active');
-        
+
         if (audioInterval) {
             clearInterval(audioInterval);
         }
@@ -184,11 +180,12 @@ function stopCapture() {
     }
 }
 
+// Cambia la visibilidad de los botones según el estado de grabación
 function updateUI() {
     startButton.style.display = isRecording ? 'none' : 'block';
-    stopButton.style.display = isRecording ? 'block' : 'none';
 }
 
+// Convierte un Blob de audio a base64
 function blobToBase64(blob) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -201,70 +198,70 @@ function blobToBase64(blob) {
     });
 }
 
+// Construye un blob de audio en formato WAV a partir de los fragmentos capturados
 function createWavBlob(audioChunks) {
     const buffer = new Int16Array(audioChunks.reduce((acc, chunk) => acc + chunk.length, 0));
     let offset = 0;
-    
+
     for (const chunk of audioChunks) {
         buffer.set(chunk, offset);
         offset += chunk.length;
     }
-    
-    // Crear encabezado WAV
+
+    // Creamos el encabezado WAV manualmente
     const wavHeader = new Uint8Array(44);
     const view = new DataView(wavHeader.buffer);
-    
-    // Encabezado WAV
+
     view.setUint32(0, 0x46464952, true); // "RIFF"
-    view.setUint32(4, 36 + buffer.length * 2, true); // Tamaño del archivo
+    view.setUint32(4, 36 + buffer.length * 2, true);
     view.setUint32(8, 0x45564157, true); // "WAVE"
     view.setUint32(12, 0x20746d66, true); // "fmt "
-    view.setUint32(16, 16, true); // Longitud del formato
+    view.setUint32(16, 16, true); // Tamaño del subchunk
     view.setUint16(20, 1, true); // Formato PCM
-    view.setUint16(22, 1, true); // Canales mono
+    view.setUint16(22, 1, true); // Mono
     view.setUint32(24, 44100, true); // Frecuencia de muestreo
-    view.setUint32(28, 44100 * 2, true); // Bytes por segundo
-    view.setUint16(32, 2, true); // Bytes por muestra
+    view.setUint32(28, 44100 * 2, true); // Byte rate
+    view.setUint16(32, 2, true); // Bloque de alineación
     view.setUint16(34, 16, true); // Bits por muestra
     view.setUint32(36, 0x61746164, true); // "data"
-    view.setUint32(40, buffer.length * 2, true); // Tamaño de los datos
-    
-    // Combinar encabezado y datos
+    view.setUint32(40, buffer.length * 2, true);
+
     const wavData = new Uint8Array(wavHeader.length + buffer.length * 2);
     wavData.set(wavHeader);
     wavData.set(new Uint8Array(buffer.buffer), wavHeader.length);
-    
-    return new Blob([wavData], { type: 'audio/wav' });
+
+    return new Blob([wavData], {type: 'audio/wav'});
 }
 
+// Agrega una nueva transcripción al contenedor visual
 function addTranscription(text) {
     const transcriptionItem = document.createElement('div');
     transcriptionItem.className = 'transcription-item';
-    
+
     const textElement = document.createElement('div');
     textElement.className = 'transcription-text';
     textElement.textContent = text;
-    
+
     transcriptionItem.appendChild(textElement);
     transcriptionsContainer.appendChild(transcriptionItem);
     transcriptionsContainer.scrollTop = transcriptionsContainer.scrollHeight;
 }
 
-// Detener la captura si el usuario cierra la pestaña
+// Detenemos la grabación si el usuario cierra o recarga la pestaña
 window.addEventListener('beforeunload', () => {
     if (isRecording) {
         stopCapture();
     }
 });
 
+// Hacemos que el contenedor de transcripciones sea arrastrable con el ratón
 transcriptions.addEventListener('mousedown', e => {
-
     const offsetX = e.clientX - transcriptions.offsetLeft;
     const offsetY = e.clientY - transcriptions.offsetTop;
 
     function onMouseMove(eMove) {
         transcriptions.style.left = `${eMove.clientX - offsetX}px`;
-        transcriptions.style.top  = `${eMove.clientY - offsetY}px`;
+        transcriptions.style.top = `${eMove.clientY - offsetY}px`;
     }
 
     function onMouseUp() {
@@ -272,7 +269,6 @@ transcriptions.addEventListener('mousedown', e => {
         document.removeEventListener('mouseup', onMouseUp);
     }
 
-    // Añade los listeners al documento
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 });

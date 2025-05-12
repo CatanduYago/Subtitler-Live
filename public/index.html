@@ -22,7 +22,6 @@
         <p>Controles de captura:</p>
         <div class="controls">
           <button id="startButton">Iniciar</button>
-          <button id="stopButton">Detener</button>
         </div>
       </div>
     </div>
@@ -50,10 +49,12 @@
   <!-- Video y Subtítulos -->
   <div id="videoContainer" class="hidden">
     <div id="videoWrapper">
-      <video id="sharedVideo" autoplay controls muted></video>
-    </div>    <div id="transcriptions"></div>
-    <button id="stopCaptureButton" class="stop-capture-button">Detener Captura</button>
+      <button id="stopCaptureButton" class="stop-capture-button">Detener Captura</button>
+      <video id="sharedVideo" autoplay muted></video>
+    </div>
+    <div id="transcriptions"></div>
   </div>
+
 
   <script src="language.js"></script>
   <script src="app.js"></script>

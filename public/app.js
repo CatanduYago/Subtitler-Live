@@ -117,7 +117,7 @@ async function startCapture() {
                     const base64Audio = await blobToBase64(wavBlob);
 
                     // Enviamos el audio codificado a la API de transcripción
-                    const response = await fetch('http://localhost:3000/transcribe', {
+                    const response = await fetch('https://transcribe.catanduyago.duckdns.org/transcribe', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -117,7 +117,7 @@ async function startCapture() {
                     const base64Audio = await blobToBase64(wavBlob);
 
                     // Enviamos el audio codificado a la API de transcripción
-                    const response = await fetch('http://localhost:3000/transcribe', {
+                    const response = await fetch('url-dominio/end-point', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -53,6 +53,33 @@
       <button id="stopCaptureButton" class="stop-capture-button">Detener Captura</button>
       <video id="sharedVideo" autoplay muted></video>
     </div>
+    <div class="subtitle-controls-wrapper">
+      <button id="toggleControls" class="toggle-controls-btn">
+        <i class="bi bi-gear-fill"></i>
+      </button>
+      <div class="subtitle-controls">
+        <div class="control-group">
+          <label for="subtitleColor">Color:</label>
+          <input type="color" id="subtitleColor" value="#e1a944">
+        </div>
+        <div class="control-group">
+          <label for="subtitleFont">Fuente:</label>
+          <select id="subtitleFont">
+            <option value="Montserrat" selected>Montserrat</option>
+            <option value="Arial">Arial</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Helvetica">Helvetica</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="subtitleSize">Tamaño:</label>
+          <input type="range" id="subtitleSize" min="12" max="48" value="16">
+          <span id="sizeValue">16px</span>
+        </div>
+      </div>
+    </div>
     <div id="transcriptions"></div>
   </div>
 

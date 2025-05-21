@@ -117,7 +117,7 @@ async function startCapture() {
                     const base64Audio = await blobToBase64(wavBlob);
 
                     // Enviamos el audio codificado a la API de transcripción
-                    const response = await fetch('url-dominio/end-point', {
+                    const response = await fetch('https://transcribe.catanduyago.duckdns.org/transcribe', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -271,4 +271,39 @@ transcriptions.addEventListener('mousedown', e => {
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
+});
+
+// Controles de estilo de subtítulos
+const subtitleColor = document.getElementById('subtitleColor');
+const subtitleFont = document.getElementById('subtitleFont');
+const subtitleSize = document.getElementById('subtitleSize');
+const sizeValue = document.getElementById('sizeValue');
+
+function updateSubtitleStyles() {
+  const transcriptions = document.getElementById('transcriptions');
+  transcriptions.style.color = subtitleColor.value;
+  transcriptions.style.fontFamily = subtitleFont.value;
+  transcriptions.style.fontSize = `${subtitleSize.value}px`;
+}
+
+subtitleColor.addEventListener('input', updateSubtitleStyles);
+subtitleFont.addEventListener('change', updateSubtitleStyles);
+subtitleSize.addEventListener('input', (e) => {
+  sizeValue.textContent = `${e.target.value}px`;
+  updateSubtitleStyles();
+});
+
+// Control del desplegable de controles
+const toggleControlsBtn = document.getElementById('toggleControls');
+const subtitleControls = document.querySelector('.subtitle-controls');
+
+toggleControlsBtn.addEventListener('click', () => {
+  subtitleControls.classList.toggle('active');
+});
+
+// Cerrar el desplegable al hacer clic fuera
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.subtitle-controls-wrapper')) {
+    subtitleControls.classList.remove('active');
+  }
 });

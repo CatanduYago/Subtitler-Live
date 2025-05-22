@@ -2,7 +2,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/CatanduYago/Transcriber-Live?style=social)](https://github.com/CatanduYago/Transcriber-Live) [![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D14-blue)](https://nodejs.org/)
 
-> Una aplicación web ligera para capturar audio de pantalla en tiempo real y transcribirlo utilizando Amazon Transcribe. 🎙️✨
+> Una aplicación web para capturar audio de pantalla en tiempo real y transcribirlo utilizando Amazon Transcribe. 🎙️✨
 
 ---
 

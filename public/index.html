@@ -1,90 +1,118 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Transcripción de Audio</title>
-  <link rel="shortcut icon" href="./transcripcion.png" type="image/x-icon">
-  <link rel="stylesheet" href="./styles.css">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
-  <div class="container" id="mainContainer">
-    <div class="top" id="topContainer">
-      <div class="left">
-        <h1>Transcriber: Live</h1>
-        <hr>
-        <p>Esta aplicación web permite capturar audio de pantalla en tiempo real y genera subtitulos a la vez. Arrastra los subtitulos donde tu quieras y disfruta.</p>
-        <p>Al ser un servicio gratuito de Amazon, está limitado a 3600 audios al mes.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transcripción de Audio</title>
+    <link rel="shortcut icon" href="./transcripcion.png" type="image/x-icon" />
+    <link rel="stylesheet" href="./styles.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container" id="mainContainer">
+      <div class="top" id="topContainer">
+        <div class="left">
+          <h1>Transcriber: Live</h1>
+          <hr />
+          <p>
+            Esta aplicación web permite capturar audio de pantalla en tiempo
+            real y genera subtitulos a la vez. Arrastra los subtitulos donde tu
+            quieras y disfruta.
+          </p>
+          <p>
+            Al ser un servicio gratuito de Amazon, está limitado a 3600 audios
+            al mes.
+          </p>
+        </div>
+
+        <div class="right">
+          <p>Controles de captura:</p>
+          <div class="controls">
+            <button id="startButton">Iniciar</button>
+          </div>
+        </div>
       </div>
 
-      <div class="right">
-        <p>Controles de captura:</p>
-        <div class="controls">
-          <button id="startButton">Iniciar</button>
+      <div class="bottom">
+        <div>
+          <button id="language-switcher" class="language-switcher">ESP</button>
+        </div>
+        <div id="redes">
+          <a
+            href="https://twitter.com/ycatalanoa"
+            target="_blank"
+            class="text-white me-3"
+          >
+            <i class="bi bi-twitter-x fs-4"></i>
+            <span>Ycatalanoa</span>
+          </a>
+          <a
+            href="https://github.com/CatanduYago"
+            target="_blank"
+            class="text-white"
+          >
+            <i class="bi bi-github fs-4"></i>
+            <span>CatanduYago</span>
+          </a>
+        </div>
+        <div>
+          <p>© 2025 Yago Catalano Andújar</p>
         </div>
       </div>
     </div>
 
-    <div class="bottom">
-      <div>
-        <button id="language-switcher" class="language-switcher">ESP</button>
+    <!-- Video y Subtítulos -->
+    <div id="videoContainer" class="hidden">
+      <div id="videoWrapper">
+        <button id="stopCaptureButton" class="stop-capture-button">
+          Detener Captura
+        </button>
+        <video id="sharedVideo" autoplay muted></video>
       </div>
-      <div id="redes">
-        <a href="https://twitter.com/ycatalanoa" target="_blank" class="text-white me-3">
-          <i class="bi bi-twitter-x fs-4"></i>
-          <span>Ycatalanoa</span>
-        </a>
-        <a href="https://github.com/CatanduYago" target="_blank" class="text-white">
-          <i class="bi bi-github fs-4"></i>
-          <span>CatanduYago</span>
-        </a>
-      </div>
-      <div>
-        <p>© 2025 Yago Catalano Andújar</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Video y Subtítulos -->
-  <div id="videoContainer" class="hidden">
-    <div id="videoWrapper">
-      <button id="stopCaptureButton" class="stop-capture-button">Detener Captura</button>
-      <video id="sharedVideo" autoplay muted></video>
-    </div>
-    <div class="subtitle-controls-wrapper">
-      <button id="toggleControls" class="toggle-controls-btn" aria-label="Controles de subtítulos">
-        <i class="bi bi-gear-fill"></i>
-      </button>
-      <div class="subtitle-controls">
-        <div class="control-group">
-          <label for="subtitleColor">Color:</label>
-          <input type="color" id="subtitleColor" value="#e1a944">
-        </div>
-        <div class="control-group">
-          <label for="subtitleFont">Fuente:</label>
-          <select id="subtitleFont">
-            <option value="Montserrat" selected>Montserrat</option>
-            <option value="Arial">Arial</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Helvetica">Helvetica</option>
-            <option value="Times New Roman">Times New Roman</option>
-            <option value="Courier New">Courier New</option>
-          </select>
-        </div>
-        <div class="control-group">
-          <label for="subtitleSize">Tamaño:</label>
-          <input type="range" id="subtitleSize" min="12" max="48" value="16">
-          <span id="sizeValue">16px</span>
+      <div class="subtitle-controls-wrapper">
+        <button
+          id="toggleControls"
+          class="toggle-controls-btn"
+          aria-label="Controles de subtítulos"
+        >
+          <i class="bi bi-gear-fill"></i>
+        </button>
+        <div class="subtitle-controls">
+          <div class="control-group">
+            <label for="subtitleColor">Color:</label>
+            <input type="color" id="subtitleColor" value="#e1a944" />
+          </div>
+          <div class="control-group">
+            <label for="subtitleFont">Fuente:</label>
+            <select id="subtitleFont">
+              <option value="Montserrat" selected>Montserrat</option>
+              <option value="Arial">Arial</option>
+              <option value="Verdana">Verdana</option>
+              <option value="Helvetica">Helvetica</option>
+              <option value="Times New Roman">Times New Roman</option>
+              <option value="Courier New">Courier New</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label for="subtitleSize">Tamaño:</label>
+            <input
+              type="range"
+              id="subtitleSize"
+              min="12"
+              max="48"
+              value="16"
+            />
+            <span id="sizeValue">16px</span>
+          </div>
         </div>
       </div>
+      <div id="transcriptions"></div>
     </div>
-    <div id="transcriptions"></div>
-  </div>
 
-
-  <script src="language.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="language.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>

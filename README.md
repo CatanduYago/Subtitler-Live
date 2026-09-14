@@ -1,119 +1,115 @@
 # Subtitler: Live
 
-[![GitHub stars](https://img.shields.io/github/stars/CatanduYago/Transcriber-Live?style=social)](https://github.com/CatanduYago/Transcriber-Live) [![License: MIT](https://img.shields.io/badge/License-MIT-green)](./LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D14-blue)](https://nodejs.org/)
+[![GitHub stars](https://img.shields.io/github/stars/CatanduYago/Subtitler-Live?style=flat)](https://github.com/CatanduYago/Subtitler-Live/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D14-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 
-> Una aplicación web para capturar audio de pantalla en tiempo real y transcribirlo utilizando Amazon Transcribe. 🎙️✨
+> A web app that captures screen audio in real time and transcribes it using Amazon Transcribe. 🎙️✨
 
----
+## ✨ Features
 
-## ✨ Características
+- 🎧 Captures audio from the browser tab or window being shared.
+- 📤 Uploads audio chunks to AWS S3 every 5 seconds.
+- 📝 Live transcription through Amazon Transcribe.
+- 🔄 Transcripts displayed in real time.
+- 🔊 Support for multiple audio formats: mp3, mp4, wav, flac, ogg, amr, webm, m4a.
 
-- 🎧 **Captura de audio** desde la pantalla compartida del navegador.
-- 📤 **Envío periódico** (cada 5 seg) de fragmentos de audio a AWS S3.
-- 📝 **Transcripción en vivo** mediante Amazon Transcribe.
-- 🔄 **Visualización** de transcripciones en tiempo real.
-- 🔊 **Soporte** para múltiples formatos de audio: mp3, mp4, wav, flac, ogg, amr, webm, m4a.
+## 🔧 Prerequisites
 
----
+- Node.js (>= v14)
+- npm or yarn
+- An AWS account with permissions for:
+  - **S3:** `s3:CreateBucket`, `s3:PutObject`, `s3:HeadBucket`
+  - **Transcribe:** `transcribe:StartTranscriptionJob`, `transcribe:GetTranscriptionJob`
+- An S3 bucket (the app can create one automatically)
+- Environment variables configured (see the section below)
 
-## 🔧 Requisitos previos
+## 🚀 Installation
 
-- **Node.js** (>= v14)
-- **npm** o **yarn**
-- Cuenta de **AWS** con permisos para:
-  - S3: `s3:CreateBucket`, `s3:PutObject`, `s3:HeadBucket`
-  - Transcribe: `transcribe:StartTranscriptionJob`, `transcribe:GetTranscriptionJob`
-- Un bucket en S3 (puede crearse automáticamente)
-- Variables de entorno configuradas (ver sección siguiente)
+1. Clone the repository:
 
----
-
-## 🚀 Instalación
-
-1. **Clonar el repositorio**:
    ```bash
-   git clone https://github.com/CatanduYago/Transcriber-Live.git
-   cd Transcriber-Live
+   git clone https://github.com/CatanduYago/Subtitler-Live.git
+   cd Subtitler-Live
    ```
-2. **Instalar dependencias**:
+
+2. Install dependencies:
+
    ```bash
    npm install
-   # o con yarn
+   # or with yarn
    yarn install
    ```
-3. **Configurar variables de entorno**:
+
+3. Set up your environment variables:
+
    ```bash
    mv .env.example .env
    ```
-4. **Editar `.env`** con tus credenciales y ajustes:
-   ```dotenv
+
+   Then edit `.env` with your credentials and settings:
+
+   ```env
    PORT=3000
-   AWS_ACCESS_KEY_ID=tu_access_key_id
-   AWS_SECRET_ACCESS_KEY=tu_secret_access_key
+   AWS_ACCESS_KEY_ID=your_access_key_id
+   AWS_SECRET_ACCESS_KEY=your_secret_access_key
    AWS_REGION=us-east-2
-   AWS_S3_BUCKET=tu_bucket
+   AWS_S3_BUCKET=your_bucket
    AWS_TRANSCRIBE_LANGUAGE=es-ES
    ```
 
----
+## 🚀 Usage
 
-## 🚀 Uso
+1. Start the server:
 
-1. **Iniciar servidor**:
    ```bash
    npm start
-   # o
+   # or
    node index.js
    ```
-2. Abrir el navegador en: `http://localhost:3000`
-3. Hacer clic en **Iniciar** para capturar pantalla + audio:
-   - Seleccionar la pestaña/ventana deseada.
-   - Asegurarse de marcar **Compartir audio**.
-4. 🎤 Cada 5 segundos se enviará un fragmento a Amazon Transcribe.
-5. 📜 Las transcripciones aparecerán en tiempo real.
-6. 🛑 Clic en **Detener** para finalizar.
 
----
+2. Open your browser at http://localhost:3000
+3. Click **Start** to begin capturing the screen and its audio:
+   - Pick the tab or window you want to share.
+   - Make sure **Share audio** is checked.
+4. 🎤 A new audio chunk is sent to Amazon Transcribe every 5 seconds.
+5. 📜 Transcripts appear in real time.
+6. 🛑 Click **Stop** to end the session.
 
-## 📁 Estructura del proyecto
+## 📁 Project structure
 
 ```
-├── audio/            # Carpeta en la que se almacenan temporalmente los audios grabados antes de mandarse a AWS
+├── audio/            # Temporary storage for recorded audio before it is sent to AWS
 │
 ├── backend/
-│   ├── server.js     # Servidor que se encarga de recibir los audios y mandarlos a Amazon Transcribe
-│   ├── .env.example  # Ejemplo de variables de entorno
+│   ├── server.js     # Server that receives the audio and forwards it to Amazon Transcribe
+│   ├── .env.example  # Example environment variables
 │
 ├── public/
-│   ├── index.html     # Página principal
-│   ├── styles.css     # Estilos CSS
-│   ├── language.js    # Lógica del cambio de idiomas
-│   └── app.js         # Script de captura y UI
-
-├── package.json       # Dependencias y scripts
-└── README.md          # Documentación
+│   ├── index.html    # Main page
+│   ├── styles.css    # CSS styles
+│   ├── language.js   # Language switching logic
+│   └── app.js        # Capture and UI script
+│
+├── package.json      # Dependencies and scripts
+└── README.md         # Documentation
 ```
 
----
+## ⚙️ Environment variables
 
-## ⚙️ Variables de entorno
+| Variable | Description |
+| --- | --- |
+| `PORT` | Port to listen on (defaults to 3000) |
+| `AWS_ACCESS_KEY_ID` | Your AWS access key ID |
+| `AWS_SECRET_ACCESS_KEY` | Your AWS secret access key |
+| `AWS_REGION` | AWS region (e.g. `us-east-2`) |
+| `AWS_S3_BUCKET` | Name of the S3 bucket used to store the audio |
+| `AWS_TRANSCRIBE_LANGUAGE` | Language code for Transcribe (e.g. `es-ES`) |
 
-| Variable                  | Descripción                                             |
-| ------------------------- | ------------------------------------------------------- |
-| `PORT`                    | Puerto de escucha (por defecto 3000)                    |
-| `AWS_ACCESS_KEY_ID`       | ID de tu clave de acceso AWS                            |
-| `AWS_SECRET_ACCESS_KEY`   | Secreto de tu clave AWS                                 |
-| `AWS_REGION`              | Región AWS (ej. `us-east-2`)                            |
-| `AWS_S3_BUCKET`           | Nombre del bucket S3 para almacenar los audios          |
-| `AWS_TRANSCRIBE_LANGUAGE` | Código de idioma para Transcribe (ej. `es-ES`)          |
+## 📄 License
 
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia **MIT**. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
+This project is released under the MIT license. See the [LICENSE](LICENSE) file for details.
 
 ---
 
 © 2025 Yago Catalano Andújar
-
